@@ -31,7 +31,7 @@ public class RootController {
         endpoints.put("GET /api/items/stats", "Catalog statistics");
         
         response.put("endpoints", endpoints);
-        response.put("documentation", "https://github.com/abraralis/JavaTaskApp");
+        response.put("documentation", "https://github.com/AbraraliS/Item-Catalog-API");
         response.put("message", "API is running. Use the endpoints above to interact with the catalog.");
         
         return ResponseEntity.ok(response);
