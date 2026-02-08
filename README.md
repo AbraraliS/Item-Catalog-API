@@ -103,12 +103,12 @@ curl http://localhost:8080/api/items/1
 
 2. **Create Render account**
    - Visit [render.com](https://render.com)
-   - Sign up (free tier available)
+   - Sign up
    - Connect your GitHub account
 
 3. **Deploy your application**
 
-   **Option A: Blueprint (Recommended)**
+   **Option A: Blueprint**
    - Click **New** → **Blueprint**
    - Select your repository
    - Click **Apply**
@@ -123,7 +123,7 @@ curl http://localhost:8080/api/items/1
      - **Branch**: `main`
      - **Dockerfile Path**: `./Dockerfile`
 
-4. **Set Environment Variables** (if using manual setup)
+4. **Set Environment Variables** 
    ```
    PORT=8080
    JAVA_TOOL_OPTIONS=-Xmx512m -Xms256m
@@ -254,6 +254,6 @@ curl http://localhost:8080/api/items/health
 curl https://your-app.onrender.com/api/items/health
 ```
 
-## License
+<!-- ## License
 
-This project is available for educational and commercial use.
+This project is available for educational and commercial use. -->
