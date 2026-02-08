@@ -2,6 +2,10 @@
 
 A simple Java backend RESTful API for managing a collection of items (e.g., eCommerce products or movie catalogs). Built with Spring Boot, this application provides in-memory storage with full CRUD operations.
 
+**🌐 Live Deployment:** [https://item-catalog-api-jxqg.onrender.com](https://item-catalog-api-jxqg.onrender.com)
+
+> The API is currently deployed and running on Render. Visit the base URL to see API information and available endpoints.
+
 ## Prerequisites
 
 - **Java 17** or higher
@@ -33,32 +37,64 @@ A simple Java backend RESTful API for managing a collection of items (e.g., eCom
 
 ## API Endpoints
 
+**Base URL (Local):** `http://localhost:8080`  
+**Base URL (Production):** `https://item-catalog-api-jxqg.onrender.com`
+
 ### Core Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/items` | Create a new item |
-| GET | `/api/items/{id}` | Get item by ID |
-| GET | `/api/items` | Get all items |
-| PUT | `/api/items/{id}` | Update an item |
-| DELETE | `/api/items/{id}` | Delete an item |
-| GET | `/api/items/health` | Health check |
+| Method | Endpoint | Description | Status Codes |
+|--------|----------|-------------|--------------|
+| GET | `/` | API information | 200 |
+| POST | `/api/items` | Create a new item | 201, 400 |
+| GET | `/api/items/{id}` | Get item by ID | 200, 404 |
+| GET | `/api/items` | Get all items | 200 |
+| PUT | `/api/items/{id}` | Update an item | 200, 400, 404 |
+| DELETE | `/api/items/{id}` | Delete an item | 200, 404 |
+| GET | `/api/items/health` | Health check | 200 |
+| GET | `/api/items/stats` | Catalog statistics | 200 |
 
-### Request/Response Examples
+### Example Requests
 
-**Create Item (POST /api/items)**
+#### 1. Get API Information (GET /)
+```bash
+curl https://item-catalog-api-jxqg.onrender.com/
+```
+
+**Response (200 OK):**
 ```json
 {
-  "name": "Product Name",
-  "description": "Product description (10-500 characters)",
-  "category": "Electronics",
-  "price": 99.99,
-  "stockQuantity": 50,
-  "rating": 4.5
+  "application": "Item Catalog API",
+  "description": "A simple REST API for managing a collection of items",
+  "version": "1.0.0",
+  "status": "Live on Render",
+  "endpoints": {
+    "POST /api/items": "Create a new item",
+    "GET /api/items/{id}": "Get item by ID",
+    "GET /api/items": "Get all items",
+    "PUT /api/items/{id}": "Update an item",
+    "DELETE /api/items/{id}": "Delete an item",
+    "GET /api/items/health": "Health check",
+    "GET /api/items/stats": "Catalog statistics"
+  },
+  "message": "API is running. Use the endpoints above to interact with the catalog."
 }
 ```
 
-**Response (201 Created)**
+#### 2. Create Item (POST /api/items)
+```bash
+curl -X POST https://item-catalog-api-jxqg.onrender.com/api/items \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Product Name",
+    "description": "Product description (10-500 characters)",
+    "category": "Electronics",
+    "price": 99.99,
+    "stockQuantity": 50,
+    "rating": 4.5
+  }'
+```
+
+**Response (201 Created):**
 ```json
 {
   "id": 1,
@@ -73,9 +109,156 @@ A simple Java backend RESTful API for managing a collection of items (e.g., eCom
 }
 ```
 
-**Get Item by ID (GET /api/items/{id})**
+#### 3. Get Item by ID (GET /api/items/{id})
 ```bash
-curl http://localhost:8080/api/items/1
+curl https://item-catalog-api-jxqg.onrender.com/api/items/1
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "name": "Product Name",
+  "description": "Product description (10-500 characters)",
+  "category": "Electronics",
+  "price": 99.99,
+  "stockQuantity": 50,
+  "rating": 4.5,
+  "createdAt": "2026-02-08T10:30:00",
+  "updatedAt": "2026-02-08T10:30:00"
+}
+```
+
+#### 4. Get All Items (GET /api/items)
+```bash
+curl https://item-catalog-api-jxqg.onrender.com/api/items
+```
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "name": "Sample Product",
+    "description": "This is a sample product for demonstration purposes",
+    "category": "Electronics",
+    "price": 99.99,
+    "stockQuantity": 50,
+    "rating": 4.5,
+    "createdAt": "2026-02-08T09:00:00",
+    "updatedAt": "2026-02-08T09:00:00"
+  }
+]
+```
+
+#### 5. Update Item (PUT /api/items/{id})
+```bash
+curl -X PUT https://item-catalog-api-jxqg.onrender.com/api/items/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Updated Product",
+    "description": "Updated description with more details here",
+    "category": "Electronics",
+    "price": 149.99,
+    "stockQuantity": 75,
+    "rating": 4.8
+  }'
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "name": "Updated Product",
+  "description": "Updated description with more details here",
+  "category": "Electronics",
+  "price": 149.99,
+  "stockQuantity": 75,
+  "rating": 4.8,
+  "createdAt": "2026-02-08T09:00:00",
+  "updatedAt": "2026-02-08T10:45:00"
+}
+```
+
+#### 6. Delete Item (DELETE /api/items/{id})
+```bash
+curl -X DELETE https://item-catalog-api-jxqg.onrender.com/api/items/1
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Item with ID 1 deleted successfully",
+  "deleted": true
+}
+```
+
+#### 7. Health Check (GET /api/items/health)
+```bash
+curl https://item-catalog-api-jxqg.onrender.com/api/items/health
+```
+
+**Response (200 OK):**
+```json
+{
+  "status": "UP",
+  "message": "Item Catalog API is running",
+  "timestamp": "2026-02-08T10:30:00"
+}
+```
+
+#### 8. Catalog Statistics (GET /api/items/stats)
+```bash
+curl https://item-catalog-api-jxqg.onrender.com/api/items/stats
+```
+
+**Response (200 OK):**
+```json
+{
+  "totalItems": 1,
+  "totalCategories": 1,
+  "message": "Catalog statistics retrieved successfully"
+}
+```
+
+## Error Responses
+
+### Validation Error (400 Bad Request)
+```json
+{
+  "timestamp": "2026-02-08T10:30:00",
+  "status": 400,
+  "error": "Validation Failed",
+  "message": "Input validation failed. Please check the errors below.",
+  "path": "/api/items",
+  "errors": [
+    "name: Item name must be between 2 and 100 characters",
+    "price: Price must be greater than 0",
+    "description: Description must be between 10 and 500 characters"
+  ]
+}
+```
+
+### Item Not Found (404 Not Found)
+```json
+{
+  "timestamp": "2026-02-08T10:30:00",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Item with ID 999 not found in the catalog",
+  "path": "/api/items/999"
+}
+```
+
+### Internal Server Error (500)
+```json
+{
+  "timestamp": "2026-02-08T10:30:00",
+  "status": 500,
+  "error": "Internal Server Error",
+  "message": "An unexpected error occurred",
+  "path": "/api/items"
+}
 ```
 
 ## Validation Rules
@@ -173,23 +356,33 @@ Render uses Docker, so the build and start commands are defined in the `Dockerfi
 
 ### Testing Your Deployment
 
+**Health Check**
 ```bash
-# Health check
-curl https://your-app.onrender.com/api/items/health
+curl https://item-catalog-api-jxqg.onrender.com/api/items/health
+```
 
-# Create an item
-curl -X POST https://your-app.onrender.com/api/items \
+**Create an Item**
+```bash
+curl -X POST https://item-catalog-api-jxqg.onrender.com/api/items \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Test Product",
-    "description": "Testing Render deployment",
+    "description": "Testing Render deployment with this product",
     "category": "Testing",
     "price": 99.99,
-    "stockQuantity": 10
+    "stockQuantity": 10,
+    "rating": 4.0
   }'
+```
 
-# Get all items
-curl https://your-app.onrender.com/api/items
+**Get All Items**
+```bash
+curl https://item-catalog-api-jxqg.onrender.com/api/items
+```
+
+**Get Catalog Statistics**
+```bash
+curl https://item-catalog-api-jxqg.onrender.com/api/items/stats
 ```
 
 ### Troubleshooting
@@ -251,7 +444,7 @@ curl http://localhost:8080/api/items/health
 
 **Production Testing**
 ```bash
-curl https://your-app.onrender.com/api/items/health
+curl https://item-catalog-api-jxqg.onrender.com/api/items/health
 ```
 
 <!-- ## License
