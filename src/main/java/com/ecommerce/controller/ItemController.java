@@ -11,9 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * REST Controller for Item Catalog API operations.
- */
 @RestController
 @RequestMapping("/api/items")
 @CrossOrigin(origins = "*")

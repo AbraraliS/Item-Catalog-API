@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/**
- * Represents an item in the catalog (product, movie, etc.)
- */
 @Data
 @Builder
 @NoArgsConstructor

@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-/**
- * Service for managing item CRUD operations with in-memory storage.
- */
 @Service
 public class ItemService {
 
@@ -25,33 +22,12 @@ public class ItemService {
 
     private void initializeSampleData() {
         createItem(Item.builder()
-            .name("iPhone 15 Pro Max")
-            .description("Latest Apple flagship smartphone with A17 Pro chip, titanium design, and advanced camera system")
+            .name("Sample Product")
+            .description("This is a sample product for demonstration purposes")
             .category("Electronics")
-            .price(1199.99)
+            .price(99.99)
             .stockQuantity(50)
-            .imageUrl("https://example.com/iphone15.jpg")
-            .rating(4.8)
-            .build());
-
-        createItem(Item.builder()
-            .name("The Shawshank Redemption")
-            .description("Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency")
-            .category("Drama")
-            .price(3.99)
-            .stockQuantity(1000)
-            .imageUrl("https://example.com/shawshank.jpg")
-            .rating(4.9)
-            .build());
-
-        createItem(Item.builder()
-            .name("Sony WH-1000XM5 Headphones")
-            .description("Industry-leading noise canceling headphones with exceptional sound quality and 30-hour battery life")
-            .category("Electronics")
-            .price(399.99)
-            .stockQuantity(30)
-            .imageUrl("https://example.com/sony-headphones.jpg")
-            .rating(4.7)
+            .rating(4.5)
             .build());
     }
 

@@ -1,34 +1,11 @@
 # Item Catalog API
 
-A production-ready RESTful API for managing item catalogs, built with Spring Boot. Perfect for eCommerce platforms, inventory management, or media catalogs.
-
-## Features
-
-- ✅ RESTful API with 8 endpoints
-- ✅ In-memory data storage with thread-safe operations
-- ✅ Comprehensive input validation
-- ✅ Global exception handling
-- ✅ Production-ready configuration
-- ✅ Docker support
-- ✅ Health check endpoint
-
-## Technologies & Dependencies
-
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Java | 17+ | Programming language |
-| Spring Boot | 3.2.2 | Application framework |
-| Spring Web | 3.2.2 | REST API support |
-| Jakarta Validation | 3.0.2 | Input validation |
-| Lombok | edge-SNAPSHOT | Reduce boilerplate code |
-| Maven | 3.9.6 | Build tool |
-| SLF4J/Logback | (included) | Logging framework |
+A simple Java backend RESTful API for managing a collection of items (e.g., eCommerce products or movie catalogs). Built with Spring Boot, this application provides in-memory storage for item data with full CRUD operations.
 
 ## Prerequisites
 
-- Java 17 or higher
-- Maven 3.6+
-- Docker (optional, for containerized deployment)
+- **Java 17** or higher
+- **Maven 3.6+** for dependency management
 
 Verify installation:
 ```bash
@@ -36,196 +13,228 @@ java -version
 mvn -version
 ```
 
-## Setup
+## Setup and Run Locally
 
-Build the project:
-```bash
-mvn clean install
-```
+1. **Clone or download the project**
+   ```bash
+   cd JavaTaskApp
+   ```
 
-## Running the Application
+2. **Build the application**
+   ```bash
+   mvn clean install
+   ```
 
-Using Maven:
-```bash
-mvn spring-boot:run
-```
+3. **Run the application**
+   ```bash
+   mvn spring-boot:run
+   ```
 
-Using JAR file:
-```bash
-mvn clean package
-java -jar target/item-catalog-api-1.0.0.jar
-```
+   Or run the JAR directly:
+   ```bash
+   mvn clean package
+   java -jar target/item-catalog-api-1.0.0.jar
+   ```
 
-The application runs on **http://localhost:8080**
+4. **Access the API**
+   
+   The application runs on `http://localhost:8080`
 
 ## API Endpoints
 
-Base URL: `http://localhost:8080/api/items`
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/items/health` | Health check |
-| GET | `/api/items/stats` | Catalog statistics |
-| POST | `/api/items` | Create item |
-| GET | `/api/items` | Get all items |
-| GET | `/api/items?category={category}` | Get items by category |
-| GET | `/api/items/{id}` | Get item by ID |
-| PUT | `/api/items/{id}` | Update item |
-| DELETE | `/api/items/{id}` | Delete item |
-
-## Request Examples
-
 ### Create Item
-```bash
-POST http://localhost:8080/api/items
-Content-Type: application/json
+**POST** `/api/items`
 
+Creates a new item in the catalog.
+
+**Request Body:**
+```json
 {
-  "name": "Samsung Galaxy S24",
-  "description": "Premium smartphone with advanced features",
+  "name": "Product Name",
+  "description": "Product description (10-500 characters)",
   "category": "Electronics",
-  "price": 1299.99,
-  "stockQuantity": 75,
-  "rating": 4.7
+  "price": 99.99,
+  "stockQuantity": 50,
+  "imageUrl": "https://example.com/image.jpg",
+  "rating": 4.5
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": 1,
+  "name": "Product Name",
+  "description": "Product description (10-500 characters)",
+  "category": "Electronics",
+  "price": 99.99,
+  "stockQuantity": 50,
+  "imageUrl": "https://example.com/image.jpg",
+  "rating": 4.5,
+  "createdAt": "2026-02-08T10:30:00",
+  "updatedAt": "2026-02-08T10:30:00"
 }
 ```
 
 ### Get Item by ID
+**GET** `/api/items/{id}`
+
+Retrieves a single item by its ID.
+
+**Example:**
 ```bash
 GET http://localhost:8080/api/items/1
 ```
 
-### Update Item
-```bash
-PUT http://localhost:8080/api/items/1
-Content-Type: application/json
-
+**Response (200 OK):**
+```json
 {
-  "name": "Updated Name",
-  "description": "Updated description here",
+  "id": 1,
+  "name": "Product Name",
+  "description": "Product description (10-500 characters)",
   "category": "Electronics",
-  "price": 1199.99,
+  "price": 99.99,
   "stockQuantity": 50,
-  "rating": 4.8
+  "imageUrl": "https://example.com/image.jpg",
+  "rating": 4.5,
+  "createdAt": "2026-02-08T10:30:00",
+  "updatedAt": "2026-02-08T10:30:00"
 }
 ```
 
-### Delete Item
-```bash
-DELETE http://localhost:8080/api/items/1
-```
-
-## Validation Rules
-
-| Field | Constraints |
-|-------|-------------|
-| name | 2-100 characters, required |
-| description | 10-500 characters, required |
-| category | 2-50 characters, required |
-| price | > 0, required |
-| stockQuantity | >= 0, required |
-| imageUrl | Valid URL format, optional |
-| rating | 0.0 - 5.0, optional |
-
-## Error Responses
-
-HTTP Status Codes:
-- `200 OK` - Success
-- `201 Created` - Item created
-- `400 Bad Request` - Validation error
-- `404 Not Found` - Item not found
-- `500 Internal Server Error` - Server error
-
-Error Response Format:
+**Response (404 Not Found):**
 ```json
 {
   "timestamp": "2026-02-08T10:30:00",
   "status": 404,
   "error": "Not Found",
-  "message": "Item with ID 999 not found in the catalog",
-  "path": "/api/items/999"
+  "message": "Item with ID 1 not found in the catalog",
+  "path": "/api/items/1"
 }
 ```
 
+### Additional Endpoints
+
+The API also supports the following operations:
+- **GET** `/api/items` - Get all items (with optional `?category=` filter)
+- **PUT** `/api/items/{id}` - Update an existing item
+- **DELETE** `/api/items/{id}` - Delete an item
+- **GET** `/api/items/health` - Health check endpoint
+- **GET** `/api/items/stats` - Catalog statistics
+
+## Validation Rules
+
+All item fields must meet the following constraints:
+
+| Field | Required | Constraints |
+|-------|----------|-------------|
+| name | Yes | 2-100 characters |
+| description | Yes | 10-500 characters |
+| category | Yes | 2-50 characters |
+| price | Yes | Greater than 0 |
+| stockQuantity | Yes | 0 or greater |
+| imageUrl | No | Valid URL format |
+| rating | No | 0.0 - 5.0 |
+
+## Dependencies
+
+| Dependency | Version | Purpose |
+|------------|---------|---------|
+| Java | 17+ | Programming language |
+| Spring Boot | 3.2.2 | Application framework |
+| Spring Web | Included | REST API support |
+| Jakarta Validation | Included | Input validation |
+| Lombok | edge-SNAPSHOT | Reduce boilerplate code |
+| Maven | 3.9.6 | Build automation |
+
+All dependencies are managed in `pom.xml` and automatically downloaded during the build process.
+
+## Production Deployment
+
+### Deploy to Railway
+
+1. Create account at [railway.app](https://railway.app/)
+2. Click **New Project** → **Deploy from GitHub**
+3. Select your repository
+4. Railway automatically detects Maven and builds the application
+5. Access your app at the provided URL
+
+**Environment Variables:**
+```
+PORT=8080 (auto-configured by Railway)
+```
+
+### Deploy to Heroku
+
+```bash
+# Install Heroku CLI and login
+heroku login
+
+# Create new app
+heroku create your-app-name
+
+# Deploy
+git push heroku main
+
+# Open your app
+heroku open
+```
+
+**Environment Variables:**
+```bash
+heroku config:set JAVA_TOOL_OPTIONS="-Xmx300m"
+```
+
+### Deploy with Docker
+
+The application includes a `Dockerfile` for containerized deployment.
+
+```bash
+# Build Docker image
+docker build -t item-catalog-api .
+
+# Run container
+docker run -p 8080:8080 item-catalog-api
+```
+
+Deploy to cloud platforms:
+- **AWS**: Elastic Beanstalk or ECS
+- **Google Cloud**: Cloud Run
+- **Azure**: Container Instances
+
+**Production Configuration:**
+
+The application uses `application.properties` for configuration. Key settings:
+- `server.port=${PORT:8080}` - Dynamic port binding for cloud platforms
+- `server.error.include-stacktrace=never` - Security: no stack traces in production
+- In-memory ArrayList storage (consider database for production scale)
+
 ## Testing
 
-Using cURL:
+Test endpoints using cURL:
+
 ```bash
-# Health check
-curl http://localhost:8080/api/items/health
-
-# Get all items
-curl http://localhost:8080/api/items
-
 # Create item
 curl -X POST http://localhost:8080/api/items \
   -H "Content-Type: application/json" \
-  -d '{"name":"Test Item","description":"Test description here","category":"Test","price":99.99,"stockQuantity":10}'
+  -d '{
+    "name": "Test Product",
+    "description": "This is a test product",
+    "category": "Testing",
+    "price": 99.99,
+    "stockQuantity": 10
+  }'
+
+# Get item by ID
+curl http://localhost:8080/api/items/1
+
+# Health check
+curl http://localhost:8080/api/items/health
 ```
 
-Using browser (GET requests only):
+Or open in browser:
 - http://localhost:8080/api/items
 - http://localhost:8080/api/items/health
-
-## Production Features
-
-### Security
-- No stack traces exposed in production mode
-- Validation errors don't leak sensitive information
-- Exception messages sanitized for public consumption
-- Docker container runs as non-root user
-
-### Performance
-- Response compression enabled
-- Optimized JSON serialization
-- Thread-safe in-memory data store
-- Efficient ArrayList-based storage
-
-### Monitoring
-- Health check endpoint at `/api/items/health`
-- Statistics endpoint at `/api/items/stats`
-- Structured logging with SLF4J
-- Application startup banner with configuration details
-
-### Error Handling
-- Global exception handler for consistent responses
-- Proper HTTP status codes (200, 201, 400, 404, 500)
-- Validation errors with detailed field-level messages
-- Graceful handling of unexpected errors
-
-## Architecture
-
-```
-┌─────────────────────────────────────────┐
-│         ItemController (REST API)        │
-│  - POST /api/items                      │
-│  - GET /api/items/{id}                  │
-│  - PUT /api/items/{id}                  │
-│  - DELETE /api/items/{id}               │
-│  - GET /api/items?category=...          │
-│  - GET /api/items/health                │
-│  - GET /api/items/stats                 │
-└────────────┬────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────┐
-│      ItemService (Business Logic)       │
-│  - createItem()                         │
-│  - getAllItems()                        │
-│  - getItemById()                        │
-│  - updateItem()                         │
-│  - deleteItem()                         │
-│  - getItemsByCategory()                 │
-└────────────┬────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────┐
-│     ArrayList<Item> (Data Store)        │
-│  - Thread-safe with synchronized        │
-│  - AtomicLong for ID generation         │
-│  - In-memory persistence                │
-└─────────────────────────────────────────┘
-```
 
 ## Project Structure
 
@@ -238,88 +247,17 @@ JavaTaskApp/
 │   ├── service/
 │   │   └── ItemService.java             # Business logic
 │   ├── model/
-│   │   └── Item.java                    # Entity model
+│   │   └── Item.java                    # Data model
 │   └── exception/
 │       ├── ItemNotFoundException.java   # Custom exception
 │       ├── ErrorResponse.java           # Error response model
-│       └── GlobalExceptionHandler.java  # Exception handler
+│       └── GlobalExceptionHandler.java  # Exception handling
 ├── src/main/resources/
-│   ├── application.properties           # Default config
-│   ├── application-production.properties # Production config
-│   └── static/
-│       └── favicon.svg                  # Custom favicon
+│   └── application.properties           # Configuration
 ├── Dockerfile                           # Container definition
-├── docker-compose.yml                   # Docker Compose config
-├── pom.xml                              # Maven configuration
-└── README.md                            # Documentation
+└── pom.xml                              # Maven dependencies
 ```
 
 ## License
 
-This project is created for educational and commercial purposes.
-
-## Deployment
-
-### Docker Deployment (Recommended)
-
-Build and run with Docker:
-```bash
-# Build Docker image
-docker build -t item-catalog-api .
-
-# Run container
-docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=production item-catalog-api
-
-# Or use Docker Compose
-docker-compose up -d
-```
-
-Access the API at: http://localhost:8080
-
-### Cloud Platform Deployment
-
-#### Railway.app
-1. Create account at [railway.app](https://railway.app/)
-2. Click "New Project" → "Deploy from GitHub"
-3. Select your repository
-4. Set environment variable: `SPRING_PROFILES_ACTIVE=production`
-5. Railway auto-builds and deploys
-
-#### Heroku
-```bash
-# Login to Heroku
-heroku login
-
-# Create app
-heroku create your-app-name
-
-# Set config
-heroku config:set SPRING_PROFILES_ACTIVE=production
-
-# Deploy
-git push heroku main
-```
-
-#### AWS/Google Cloud/Azure
-Deploy the Docker container to:
-- AWS Elastic Beanstalk / ECS
-- Google Cloud Run
-- Azure Container Instances
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SPRING_PROFILES_ACTIVE` | default | Set to `production` for production |
-| `PORT` | 8080 | Server port (auto-set by some platforms) |
-
-### Production Checklist
-
-- [x] Stack traces disabled in error responses
-- [x] Debug logging disabled
-- [x] Input validation on all endpoints
-- [x] Global exception handling
-- [x] Non-root user in Docker container
-- [x] Health check endpoint configured
-- [x] Compression enabled for responses
-- [x] Security headers configured
+This project is available for educational and commercial use.

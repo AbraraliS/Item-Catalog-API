@@ -40,8 +40,8 @@ logs/
 # Spring Boot
 application-local.properties
 application-dev.properties
-application-prod.properties
 
 # Environment variables
 .env
 .env.local
+!.env.example

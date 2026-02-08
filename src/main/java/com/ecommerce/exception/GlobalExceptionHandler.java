@@ -13,9 +13,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Global exception handler for consistent error responses.
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
