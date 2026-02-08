@@ -1,21 +1,17 @@
 # Item Catalog API
 
-A simple Java backend RESTful API for managing a collection of items (e.g., eCommerce products or movie catalogs). Built with Spring Boot, this application provides in-memory storage for item data with full CRUD operations.
+A simple Java backend RESTful API for managing a collection of items (e.g., eCommerce products or movie catalogs). Built with Spring Boot, this application provides in-memory storage with full CRUD operations.
 
 ## Prerequisites
 
 - **Java 17** or higher
 - **Maven 3.6+** for dependency management
 
-Verify installation:
-```bash
-java -version
-mvn -version
-```
+## Local Development
 
-## Setup and Run Locally
+### Setup and Run
 
-1. **Clone or download the project**
+1. **Clone the repository**
    ```bash
    cd JavaTaskApp
    ```
@@ -30,24 +26,27 @@ mvn -version
    mvn spring-boot:run
    ```
 
-   Or run the JAR directly:
-   ```bash
-   mvn clean package
-   java -jar target/item-catalog-api-1.0.0.jar
-   ```
-
 4. **Access the API**
-   
-   The application runs on `http://localhost:8080`
+   ```
+   http://localhost:8080
+   ```
 
 ## API Endpoints
 
-### Create Item
-**POST** `/api/items`
+### Core Endpoints
 
-Creates a new item in the catalog.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/items` | Create a new item |
+| GET | `/api/items/{id}` | Get item by ID |
+| GET | `/api/items` | Get all items |
+| PUT | `/api/items/{id}` | Update an item |
+| DELETE | `/api/items/{id}` | Delete an item |
+| GET | `/api/items/health` | Health check |
 
-**Request Body:**
+### Request/Response Examples
+
+**Create Item (POST /api/items)**
 ```json
 {
   "name": "Product Name",
@@ -55,12 +54,11 @@ Creates a new item in the catalog.
   "category": "Electronics",
   "price": 99.99,
   "stockQuantity": 50,
-  "imageUrl": "https://example.com/image.jpg",
   "rating": 4.5
 }
 ```
 
-**Response (201 Created):**
+**Response (201 Created)**
 ```json
 {
   "id": 1,
@@ -69,62 +67,18 @@ Creates a new item in the catalog.
   "category": "Electronics",
   "price": 99.99,
   "stockQuantity": 50,
-  "imageUrl": "https://example.com/image.jpg",
   "rating": 4.5,
   "createdAt": "2026-02-08T10:30:00",
   "updatedAt": "2026-02-08T10:30:00"
 }
 ```
 
-### Get Item by ID
-**GET** `/api/items/{id}`
-
-Retrieves a single item by its ID.
-
-**Example:**
+**Get Item by ID (GET /api/items/{id})**
 ```bash
-GET http://localhost:8080/api/items/1
+curl http://localhost:8080/api/items/1
 ```
-
-**Response (200 OK):**
-```json
-{
-  "id": 1,
-  "name": "Product Name",
-  "description": "Product description (10-500 characters)",
-  "category": "Electronics",
-  "price": 99.99,
-  "stockQuantity": 50,
-  "imageUrl": "https://example.com/image.jpg",
-  "rating": 4.5,
-  "createdAt": "2026-02-08T10:30:00",
-  "updatedAt": "2026-02-08T10:30:00"
-}
-```
-
-**Response (404 Not Found):**
-```json
-{
-  "timestamp": "2026-02-08T10:30:00",
-  "status": 404,
-  "error": "Not Found",
-  "message": "Item with ID 1 not found in the catalog",
-  "path": "/api/items/1"
-}
-```
-
-### Additional Endpoints
-
-The API also supports the following operations:
-- **GET** `/api/items` - Get all items (with optional `?category=` filter)
-- **PUT** `/api/items/{id}` - Update an existing item
-- **DELETE** `/api/items/{id}` - Delete an item
-- **GET** `/api/items/health` - Health check endpoint
-- **GET** `/api/items/stats` - Catalog statistics
 
 ## Validation Rules
-
-All item fields must meet the following constraints:
 
 | Field | Required | Constraints |
 |-------|----------|-------------|
@@ -133,8 +87,127 @@ All item fields must meet the following constraints:
 | category | Yes | 2-50 characters |
 | price | Yes | Greater than 0 |
 | stockQuantity | Yes | 0 or greater |
-| imageUrl | No | Valid URL format |
 | rating | No | 0.0 - 5.0 |
+
+## Deploy to Render
+
+### Quick Deploy (5 Minutes)
+
+1. **Push your code to GitHub**
+   ```bash
+   git init
+   git add .
+   git commit -m "Deploy to Render"
+   git push origin main
+   ```
+
+2. **Create Render account**
+   - Visit [render.com](https://render.com)
+   - Sign up (free tier available)
+   - Connect your GitHub account
+
+3. **Deploy your application**
+
+   **Option A: Blueprint (Recommended)**
+   - Click **New** → **Blueprint**
+   - Select your repository
+   - Click **Apply**
+   - Render automatically uses `render.yaml` configuration
+
+   **Option B: Manual Setup**
+   - Click **New** → **Web Service**
+   - Connect your GitHub repository
+   - Configure:
+     - **Name**: `item-catalog-api`
+     - **Environment**: `Docker`
+     - **Branch**: `main`
+     - **Dockerfile Path**: `./Dockerfile`
+
+4. **Set Environment Variables** (if using manual setup)
+   ```
+   PORT=8080
+   JAVA_TOOL_OPTIONS=-Xmx512m -Xms256m
+   ```
+
+5. **Wait for deployment**
+   - Build time: 3-5 minutes
+   - Status will change from "Building" → "Live"
+
+6. **Access your API**
+   ```
+   https://your-app-name.onrender.com
+   ```
+
+### Render Configuration
+
+The application includes a `render.yaml` file that automatically configures:
+
+```yaml
+services:
+  - type: web
+    name: item-catalog-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: JAVA_TOOL_OPTIONS
+        value: -Xmx512m -Xms256m
+    healthCheckPath: /api/items/health
+```
+
+### Build and Start Commands
+
+Render uses Docker, so the build and start commands are defined in the `Dockerfile`:
+
+- **Build**: Multi-stage Docker build (Maven + JRE)
+- **Start**: `java -jar app.jar`
+- **Health Check**: `/api/items/health`
+
+### Environment Variables
+
+| Variable | Value | Description |
+|----------|-------|-------------|
+| `PORT` | 8080 | Application port (auto-configured by Render) |
+| `JAVA_TOOL_OPTIONS` | -Xmx512m -Xms256m | JVM memory settings for free tier |
+
+### Testing Your Deployment
+
+```bash
+# Health check
+curl https://your-app.onrender.com/api/items/health
+
+# Create an item
+curl -X POST https://your-app.onrender.com/api/items \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Test Product",
+    "description": "Testing Render deployment",
+    "category": "Testing",
+    "price": 99.99,
+    "stockQuantity": 10
+  }'
+
+# Get all items
+curl https://your-app.onrender.com/api/items
+```
+
+### Troubleshooting
+
+**Build Fails**
+- Verify `Dockerfile` is in the repository root
+- Check build logs in Render dashboard
+- Ensure Java 17 is specified in Docker image
+
+**Application Won't Start**
+- Check application logs in Render dashboard
+- Verify environment variables are set
+- Ensure health check endpoint returns 200 OK
+
+**Free Tier Spin-Down**
+- Free tier services sleep after 15 minutes of inactivity
+- First request after sleep takes 30-60 seconds
+- Upgrade to Starter plan ($7/month) for always-on service
 
 ## Dependencies
 
@@ -142,120 +215,43 @@ All item fields must meet the following constraints:
 |------------|---------|---------|
 | Java | 17+ | Programming language |
 | Spring Boot | 3.2.2 | Application framework |
-| Spring Web | Included | REST API support |
+| Spring Web | Included | REST API |
 | Jakarta Validation | Included | Input validation |
-| Lombok | edge-SNAPSHOT | Reduce boilerplate code |
-| Maven | 3.9.6 | Build automation |
+| Lombok | edge-SNAPSHOT | Reduce boilerplate |
+| Maven | 3.9.6 | Build tool |
 
-All dependencies are managed in `pom.xml` and automatically downloaded during the build process.
-
-## Production Deployment
-
-### Deploy to Railway
-
-1. Create account at [railway.app](https://railway.app/)
-2. Click **New Project** → **Deploy from GitHub**
-3. Select your repository
-4. Railway automatically detects Maven and builds the application
-5. Access your app at the provided URL
-
-**Environment Variables:**
-```
-PORT=8080 (auto-configured by Railway)
-```
-
-### Deploy to Heroku
-
-```bash
-# Install Heroku CLI and login
-heroku login
-
-# Create new app
-heroku create your-app-name
-
-# Deploy
-git push heroku main
-
-# Open your app
-heroku open
-```
-
-**Environment Variables:**
-```bash
-heroku config:set JAVA_TOOL_OPTIONS="-Xmx300m"
-```
-
-### Deploy with Docker
-
-The application includes a `Dockerfile` for containerized deployment.
-
-```bash
-# Build Docker image
-docker build -t item-catalog-api .
-
-# Run container
-docker run -p 8080:8080 item-catalog-api
-```
-
-Deploy to cloud platforms:
-- **AWS**: Elastic Beanstalk or ECS
-- **Google Cloud**: Cloud Run
-- **Azure**: Container Instances
-
-**Production Configuration:**
-
-The application uses `application.properties` for configuration. Key settings:
-- `server.port=${PORT:8080}` - Dynamic port binding for cloud platforms
-- `server.error.include-stacktrace=never` - Security: no stack traces in production
-- In-memory ArrayList storage (consider database for production scale)
-
-## Testing
-
-Test endpoints using cURL:
-
-```bash
-# Create item
-curl -X POST http://localhost:8080/api/items \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Test Product",
-    "description": "This is a test product",
-    "category": "Testing",
-    "price": 99.99,
-    "stockQuantity": 10
-  }'
-
-# Get item by ID
-curl http://localhost:8080/api/items/1
-
-# Health check
-curl http://localhost:8080/api/items/health
-```
-
-Or open in browser:
-- http://localhost:8080/api/items
-- http://localhost:8080/api/items/health
+All dependencies are managed in `pom.xml`.
 
 ## Project Structure
 
 ```
 JavaTaskApp/
-├── src/main/java/com/ecommerce/
-│   ├── ItemCatalogApplication.java      # Main application
-│   ├── controller/
-│   │   └── ItemController.java          # REST endpoints
-│   ├── service/
-│   │   └── ItemService.java             # Business logic
-│   ├── model/
-│   │   └── Item.java                    # Data model
-│   └── exception/
-│       ├── ItemNotFoundException.java   # Custom exception
-│       ├── ErrorResponse.java           # Error response model
-│       └── GlobalExceptionHandler.java  # Exception handling
-├── src/main/resources/
-│   └── application.properties           # Configuration
-├── Dockerfile                           # Container definition
-└── pom.xml                              # Maven dependencies
+├── src/
+│   └── main/
+│       ├── java/com/ecommerce/
+│       │   ├── ItemCatalogApplication.java
+│       │   ├── controller/ItemController.java
+│       │   ├── service/ItemService.java
+│       │   ├── model/Item.java
+│       │   └── exception/
+│       └── resources/
+│           └── application.properties
+├── Dockerfile                  # Docker configuration
+├── render.yaml                 # Render deployment config
+├── pom.xml                     # Maven dependencies
+└── README.md                   # This file
+```
+
+## Testing
+
+**Local Testing**
+```bash
+curl http://localhost:8080/api/items/health
+```
+
+**Production Testing**
+```bash
+curl https://your-app.onrender.com/api/items/health
 ```
 
 ## License
